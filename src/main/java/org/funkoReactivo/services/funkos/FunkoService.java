@@ -7,9 +7,6 @@ import reactor.core.publisher.Mono;
 
 import java.rmi.server.ExportException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public interface FunkoService {
@@ -28,7 +25,7 @@ public interface FunkoService {
 
     Mono<Void> deleteAll() throws SQLException, ExecutionException, InterruptedException;
 
-    Mono<Void> backup() throws SQLException, ExecutionException, InterruptedException, ExportException;
+    Mono<Boolean> backup() throws SQLException, ExecutionException, InterruptedException, ExportException;
 
     Flux<Funko> importCsv() throws ExecutionException, InterruptedException;
 

@@ -44,13 +44,10 @@ public class CsvManager {
                                 LocalDateTime.now(),
                                 LocalDateTime.now()
                         ));
-                        Thread.sleep(1000);
                     }
                 }
 
             } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 

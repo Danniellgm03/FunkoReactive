@@ -1,5 +1,7 @@
 package org.funkoReactivo.services.funkos;
 
+import org.funkoReactivo.exceptions.cache.CachePutNullKeyException;
+import org.funkoReactivo.exceptions.cache.CachePutNullValueException;
 import org.funkoReactivo.models.Funko;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +39,15 @@ public class FunkoCacheImpl implements FunkoCache {
 
 
     @Override
-    public Mono<Void> put(Integer key, Funko value) throws Exception {
+    public Mono<Void> put(Integer key, Funko value) {
         logger.debug("Guardando funko: {} en la cache", value);
+        if(key == null){
+            logger.error("No se puede guardar un funko con id null en la cache");
+            return Mono.error(new CachePutNullKeyException("No se puede guardar un funko con id null en la cache"));
+        } else if (value == null) {
+            logger.error("No se puede guardar un funko con value null en la cache");
+            return Mono.error(new CachePutNullValueException("No se puede guardar un funko con value null en la cache"));
+        }
         return Mono.fromRunnable(() -> cache.put(key, value));
     }
 
