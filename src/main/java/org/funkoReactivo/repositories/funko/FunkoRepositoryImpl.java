@@ -40,18 +40,26 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
     @Override
     public Mono<Funko> save(Funko funko) throws SQLException, SQLException {
         logger.debug("Guardando funko: {}", funko);
+        if(funko == null){
+            return Mono.empty();
+        }
         String query = "INSERT INTO funkos (cod, myId, name, model, price, release_date) VALUES(?,?,?,?,?,?)";
         return Mono.usingWhen(
                 connectionFactory.create(),
                 connection -> Mono.from(connection.createStatement(query)
-                                .bind(0, funko.getCOD())
-                                .bind(1, funko.getMyId())
-                                .bind(2, funko.getNombre())
-                                .bind(3, funko.getModelo().toString())
-                                .bind(4, funko.getPrecio())
-                                .bind(5, funko.getFecha())
-                                .execute()
-                ).then(Mono.just(funko)),
+                        .bind(0, funko.getCOD())
+                        .bind(1, funko.getMyId())
+                        .bind(2, funko.getNombre())
+                        .bind(3, funko.getModelo().toString())
+                        .bind(4, funko.getPrecio())
+                        .bind(5, funko.getFecha())
+                        .returnGeneratedValues("id")
+                        .execute()
+                ).flatMap(res -> Mono.from(res.map((row, rowMetadata) ->{
+                            funko.setId(row.get("id", Integer.class));
+                            return funko;
+                        }
+                ))).then(Mono.just(funko)),
                 Connection::close
         );
     }
@@ -59,17 +67,20 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
     @Override
     public Mono<Funko> update(Funko funko) throws SQLException, SQLException {
         logger.debug("Actualizando funko: {}", funko);
+        if(funko == null){
+            return Mono.empty();
+        }
         String query = "UPDATE funkos SET name = ?, model = ?, price = ?, updated_at = ? WHERE id = ?";
 
         return Mono.usingWhen(
                 connectionFactory.create(),
                 connection -> Mono.from(connection.createStatement(query)
-                                .bind(0, funko.getNombre())
-                                .bind(1, funko.getModelo().toString())
-                                .bind(2, funko.getPrecio())
-                                .bind(3, LocalDateTime.now())
-                                .bind(4, funko.getId())
-                                .execute()
+                        .bind(0, funko.getNombre())
+                        .bind(1, funko.getModelo().toString())
+                        .bind(2, funko.getPrecio())
+                        .bind(3, LocalDateTime.now())
+                        .bind(4, funko.getId())
+                        .execute()
                 ).then(Mono.just(funko)),
                 Connection::close
         );
@@ -82,15 +93,15 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         return Mono.usingWhen(
                 connectionFactory.create(),
                 connection -> Mono.from(connection.createStatement(query)
-                                .bind(0, integer)
-                                .execute()
+                        .bind(0, integer)
+                        .execute()
                 ).flatMap(result -> Mono.from( result.map((row, rowMetadata) -> new Funko(
                         row.get("id", Integer.class),
                         row.get("cod", UUID.class),
                         row.get("myId", Long.class),
                         row.get("name", String.class),
-                        row.get("model", Modelo.class),
-                        row.get("price", Double.class),
+                        Modelo.valueOf(row.get("model", String.class)),
+                        row.get("price", Float.class).doubleValue(),
                         row.get("release_date", LocalDate.class),
                         row.get("created_at", LocalDateTime.class),
                         row.get("updated_at", LocalDateTime.class)
@@ -106,7 +117,7 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         return Flux.usingWhen(
                 connectionFactory.create(),
                 connection -> Flux.from(connection.createStatement(query)
-                                .execute()
+                        .execute()
                 ).flatMap(result -> Flux.from( result.map((row, rowMetadata) -> new Funko(
                         row.get("id", Integer.class),
                         row.get("cod", UUID.class),
@@ -125,14 +136,17 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
     @Override
     public Mono<Boolean> deleteById(Integer integer) throws SQLException {
         logger.debug("Eliminando funko por id: {}", integer);
+        if(this.findById(integer).block() == null){
+            return Mono.just(false);
+        }
         String query = "DELETE FROM funkos WHERE id = ?";
         return Mono.usingWhen(
                 connectionFactory.create(),
                 connection -> Mono.from(connection.createStatement(query)
                                 .bind(0, integer)
                                 .execute()
-                ).flatMapMany(Result::getRowsUpdated)
-                .hasElements(),
+                        ).flatMapMany(Result::getRowsUpdated)
+                        .hasElements(),
                 Connection::close
         );
     }
@@ -144,7 +158,7 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         return Mono.usingWhen(
                 connectionFactory.create(),
                 connection -> Mono.from(connection.createStatement(query)
-                                .execute()
+                        .execute()
                 ).then(),
                 Connection::close
         );
@@ -157,8 +171,8 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         return Flux.usingWhen(
                 connectionFactory.create(),
                 connection -> Flux.from(connection.createStatement(query)
-                                .bind(0, name)
-                                .execute()
+                        .bind(0, name)
+                        .execute()
                 ).flatMap(result -> Flux.from( result.map((row, rowMetadata) -> new Funko(
                         row.get("id", Integer.class),
                         row.get("cod", UUID.class),

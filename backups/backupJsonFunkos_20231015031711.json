@@ -1,0 +1,22 @@
+[
+  {
+    "COD": "06ab4bf7-fc3e-45dc-84cb-69faf5d8c52d",
+    "myId": 1,
+    "nombre": "Mi Funko 2",
+    "modelo": "ANIME",
+    "precio": 55.0,
+    "fecha": "2023-10-15",
+    "created_at": "2023-10-15T03:17:11.807141600",
+    "updated_at": "2023-10-15T03:17:11.807141600"
+  },
+  {
+    "COD": "858842e1-8059-4ba1-bc3d-4d9d68f44f3b",
+    "myId": 12,
+    "nombre": "Mi Funko prueba",
+    "modelo": "MARVEL",
+    "precio": 25.0,
+    "fecha": "2023-10-15",
+    "created_at": "2023-10-15T03:17:11.808141100",
+    "updated_at": "2023-10-15T03:17:11.808141100"
+  }
+]
