@@ -16,12 +16,21 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
+/**
+ * Clase que gestiona la escritura de funkos en un json
+ * @version 1.0
+ * @author daniel
+ */
 public class JsonManager {
 
     private Logger logger = LoggerFactory.getLogger(JsonManager.class);
 
+    /**
+     * Escribe una lista de funkos en un json
+     * @param funkos
+     * @param path_output
+     */
     public Mono<Boolean> writeFunkosToJson(List<Funko> funkos, String path_output)  {
         if(funkos == null  || funkos.isEmpty() || path_output == null){
             return Mono.just(false);

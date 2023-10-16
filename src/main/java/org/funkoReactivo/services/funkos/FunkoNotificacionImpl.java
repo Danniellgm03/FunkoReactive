@@ -7,6 +7,11 @@ import reactor.core.publisher.FluxSink;
 
 import static java.lang.ref.Cleaner.create;
 
+/**
+ * Implementacion de la interfaz FunkoNotificacion
+ * @see org.funkoReactivo.services.funkos.FunkoNotificacion
+ * @author daniel
+ */
 public class FunkoNotificacionImpl implements FunkoNotificacion{
 
     private static FunkoNotificacionImpl instance;
@@ -19,6 +24,9 @@ public class FunkoNotificacionImpl implements FunkoNotificacion{
         this.FunkoNotificationFlux = Flux.<Notificacion<Funko>>create(emitter -> this.FunkoNotification = emitter).share();
     }
 
+    /**
+     * Obtiene la instancia de FunkoNotificacionImpl
+     */
     public static FunkoNotificacionImpl getInstance(){
         if(instance == null){
             instance = new FunkoNotificacionImpl();
@@ -26,11 +34,18 @@ public class FunkoNotificacionImpl implements FunkoNotificacion{
         return instance;
     }
 
+    /**
+     * Obtiene la notificacion
+     */
     @Override
     public Flux<Notificacion<Funko>> getNotificacion() {
         return FunkoNotificationFlux;
     }
 
+    /**
+     * Notifica a los subscriptores
+     * @param notify
+     */
     @Override
     public void notify(Notificacion<Funko> notify) {
         FunkoNotification.next(notify);

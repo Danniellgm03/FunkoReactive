@@ -3,6 +3,11 @@ package org.funkoReactivo.utils;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Clase que se encarga de generar un id único para cada funko
+ * @see org.funkoReactivo.models.Funko
+ * @author daniel
+ */
 public class IdGenerator {
 
     private long id = 1L;
@@ -14,6 +19,9 @@ public class IdGenerator {
     private IdGenerator() {
     }
 
+    /**
+     * Método que se encarga de devolver la instancia de la clase
+     */
     public static IdGenerator getInstance() {
         if (instance == null) {
             instance = new IdGenerator();
@@ -22,6 +30,9 @@ public class IdGenerator {
     }
 
 
+    /**
+     * Método que se encarga de devolver el id actual y de incrementar el valor del id
+     */
     public Long getAndIncrementeId() {
         lock.lock();
         try {

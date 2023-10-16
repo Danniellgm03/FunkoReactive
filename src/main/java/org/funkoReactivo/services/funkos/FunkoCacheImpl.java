@@ -14,6 +14,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Implementacion de la interfaz FunkoCache
+ * @see org.funkoReactivo.services.funkos.FunkoCache
+ * @see org.funkoReactivo.services.cache.Cache
+ * @see org.funkoReactivo.models.Funko
+ * @author daniel
+ */
 public class FunkoCacheImpl implements FunkoCache {
 
     private final int maxSize;
@@ -24,6 +31,13 @@ public class FunkoCacheImpl implements FunkoCache {
 
     private final ScheduledExecutorService cleaner;
 
+    /**
+     * Constructor de FunkoCacheImpl
+     * @param maxSize
+     * @param initDelay
+     * @param period
+     * @param timeUnit
+     */
     public FunkoCacheImpl(int maxSize, int initDelay, int period, TimeUnit timeUnit){
         this.maxSize = maxSize;
         this.cache =  new LinkedHashMap<>(maxSize, 0.75f, true ){
@@ -38,6 +52,11 @@ public class FunkoCacheImpl implements FunkoCache {
     }
 
 
+    /**
+     * Guarda un funko en la cache
+     * @param key
+     * @param value
+     */
     @Override
     public Mono<Void> put(Integer key, Funko value) {
         logger.debug("Guardando funko: {} en la cache", value);
@@ -51,18 +70,29 @@ public class FunkoCacheImpl implements FunkoCache {
         return Mono.fromRunnable(() -> cache.put(key, value));
     }
 
+    /**
+     * Obtiene un funko de la cache
+     * @param key
+     */
     @Override
     public Mono<Funko> get(Integer key) {
         logger.debug("Obteniendo funko con id: {} de la cache", key);
         return Mono.justOrEmpty(cache.get(key));
     }
 
+    /**
+     * Elimina un funko de la cache
+     * @param key
+     */
     @Override
     public Mono<Funko> delete(Integer key) {
         logger.debug("Eliminando funko con id: {} de la cache", key);
         return Mono.justOrEmpty(cache.remove(key));
     }
 
+    /**
+     * Elimina todos los funkos de la cache
+     */
     @Override
     public void clear() {
         cache.entrySet().removeIf(entry -> {
@@ -74,6 +104,9 @@ public class FunkoCacheImpl implements FunkoCache {
         });
     }
 
+    /**
+     * Cierra el cleaner
+     */
     @Override
     public void shutdown() {
         cleaner.shutdown();

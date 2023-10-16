@@ -17,6 +17,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Repositorio de Funko
+ * @see FunkoRepository
+ * @see DataBaseManager
+ * @see Funko
+ * @author daniel
+ */
 public class FunkoRepositoryImpl  implements FunkoRepository{
 
     private static FunkoRepositoryImpl instance;
@@ -30,6 +37,11 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         this.connectionFactory = dataBaseManager.getConnectionPool();
     }
 
+    /**
+     * Obtenemos instancia de FunkoRepositoryImpl
+     * @param dataBaseManager
+     * @return
+     */
     public static FunkoRepositoryImpl getInstance(DataBaseManager dataBaseManager){
         if(instance == null){
             instance = new FunkoRepositoryImpl(dataBaseManager);
@@ -37,6 +49,12 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         return instance;
     }
 
+    /**
+     * Guarda un funko en la base de datos
+     * @param funko
+     * @throws SQLException
+     * @throws SQLException
+     */
     @Override
     public Mono<Funko> save(Funko funko) throws SQLException, SQLException {
         logger.debug("Guardando funko: {}", funko);
@@ -64,6 +82,12 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         );
     }
 
+    /**
+     * Actualiza un funko en la base de datos
+     * @param funko
+     * @throws SQLException
+     * @throws SQLException
+     */
     @Override
     public Mono<Funko> update(Funko funko) throws SQLException, SQLException {
         logger.debug("Actualizando funko: {}", funko);
@@ -86,6 +110,12 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         );
     }
 
+    /**
+     * Busca un funko por su id
+     * @param integer
+     * @throws SQLException
+     * @throws SQLException
+     */
     @Override
     public Mono<Funko> findById(Integer integer) throws SQLException {
         logger.debug("Buscando funko por id: {}", integer);
@@ -110,6 +140,11 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         );
     }
 
+    /**
+     * Busca todos los funkos
+     * @throws SQLException
+     * @throws SQLException
+     */
     @Override
     public Flux<Funko> findAll() throws SQLException {
         logger.debug("Buscando todos los funkos");
@@ -133,6 +168,12 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         );
     }
 
+    /**
+     * Elimina un funko por su id
+     * @param integer
+     * @throws SQLException
+     * @throws SQLException
+     */
     @Override
     public Mono<Boolean> deleteById(Integer integer) throws SQLException {
         logger.debug("Eliminando funko por id: {}", integer);
@@ -151,6 +192,11 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         );
     }
 
+    /**
+     * Elimina todos los funkos
+     * @throws SQLException
+     * @throws SQLException
+     */
     @Override
     public Mono<Void> deleteAll() throws SQLException {
         logger.debug("Eliminando todos los funkos");
@@ -164,6 +210,12 @@ public class FunkoRepositoryImpl  implements FunkoRepository{
         );
     }
 
+    /**
+     * Busca un funko por su nombre
+     * @param name
+     * @throws SQLException
+     * @throws SQLException
+     */
     @Override
     public Flux<Funko> findByNombre(String name) throws SQLException {
         logger.debug("Buscando funko por nombre: {}", name);

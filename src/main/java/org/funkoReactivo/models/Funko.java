@@ -7,6 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Clase Funko
+ * @see Modelo
+ * @see org.funkoReactivo.locale.MyLocale
+ */
 public class Funko {
     private Integer id;
     private UUID COD;
@@ -18,6 +23,18 @@ public class Funko {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
+    /**
+     * Constructor
+     * @param id
+     * @param COD
+     * @param myId
+     * @param nombre
+     * @param modelo
+     * @param precio
+     * @param fecha
+     * @param created_at
+     * @param updated_at
+     */
     public Funko(Integer id, UUID COD, Long myId, String nombre, Modelo modelo, double precio, LocalDate fecha, LocalDateTime created_at, LocalDateTime updated_at) {
         this.id = id;
         this.COD = COD;

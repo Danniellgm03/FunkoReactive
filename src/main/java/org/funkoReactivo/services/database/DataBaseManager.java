@@ -16,6 +16,12 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+/**
+ * Clase que gestiona la conexión con la base de datos
+ * Singleton
+ * @version 1.0
+ * @author daniel
+ */
 public class DataBaseManager {
 
     private static DataBaseManager instance;
@@ -47,6 +53,10 @@ public class DataBaseManager {
         }
     }
 
+    /**
+     * Obtenemos instancia de la base de datos
+     * @return this
+     */
     public synchronized static DataBaseManager getInstance(){
         if(instance == null){
             instance = new DataBaseManager();
@@ -55,6 +65,9 @@ public class DataBaseManager {
     }
 
 
+    /**
+     * Inicializa las tablas de la base de datos
+     */
     public synchronized void initTables() {
         logger.debug("Inicializando tablas de la base de datos");
         executeScript("init.sql").block();
@@ -62,6 +75,9 @@ public class DataBaseManager {
     }
 
 
+    /**
+     * Carga las propiedades de la base de datos
+     */
     private synchronized void initConfig() {
 
         logger.debug("Cargando propiedades(conf) de la base de datos");
@@ -84,6 +100,10 @@ public class DataBaseManager {
     }
 
 
+    /**
+     * Ejecuta un script de la base de datos
+     * @param scriptSqlFile
+     */
     public Mono<Void> executeScript(String scriptSqlFile) {
         logger.debug("Ejecutando script de inicialización de la base de datos: " + scriptSqlFile);
         return Mono.usingWhen(
@@ -111,7 +131,10 @@ public class DataBaseManager {
         ).then();
     }
 
-
+    /**
+     * Obtiene la conexión con la base de datos
+     * @return ConnectionPoll
+     */
     public ConnectionPool getConnectionPool() {
         return this.pool;
     }

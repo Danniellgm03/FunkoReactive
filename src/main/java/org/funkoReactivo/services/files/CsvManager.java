@@ -15,11 +15,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Clase que gestiona la lectura de un csv
+ * @version 1.0
+ * @author daniel
+ */
 public class CsvManager {
     Logger logger = LoggerFactory.getLogger(CsvManager.class);
 
-
-
+    /**
+     * Leemos el csv y lo convertimos en un flux de Funko
+     * @param path
+     */
     public Flux<Funko> readCsv(String path){
         IdGenerator idGenerator = IdGenerator.getInstance();
         return Flux.create(emitter -> {

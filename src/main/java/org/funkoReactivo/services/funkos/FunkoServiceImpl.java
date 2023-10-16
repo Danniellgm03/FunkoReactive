@@ -17,6 +17,11 @@ import java.rmi.server.ExportException;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Implementacion de la interfaz FunkoService
+ * @see FunkoService
+ * @author daniel
+ */
 public class FunkoServiceImpl implements FunkoService{
 
     private static FunkoServiceImpl instance;
@@ -37,6 +42,14 @@ public class FunkoServiceImpl implements FunkoService{
         this.storageFunko = storageFunko;
     }
 
+    /**
+     * Instancia de la clase
+     * @param repositoryFunko
+     * @param cache
+     * @param notificacion
+     * @param storageFunko
+     * @return FunkoServiceImpl
+     */
     public static FunkoServiceImpl getInstance(FunkoRepository repositoryFunko, FunkoCache cache, FunkoNotificacionImpl notificacion,  FunkoStorageServ storageFunko){
         if(instance == null){
             instance = new FunkoServiceImpl(repositoryFunko, cache, notificacion, storageFunko);
@@ -45,18 +58,29 @@ public class FunkoServiceImpl implements FunkoService{
     }
 
 
+    /**
+     * Obtiene todos los funkos
+     */
     @Override
     public Flux<Funko> findAll() throws SQLException, ExecutionException, InterruptedException {
         logger.debug("Obteniendo todos los funkos");
         return repository.findAll();
     }
 
+    /**
+     * Obtiene los funkos con nombre
+     * @param nombre
+     */
     @Override
     public Flux<Funko> findByNombre(String nombre) throws SQLException, ExecutionException, InterruptedException {
         logger.debug("Obteniendo funkos con nombre: {}", nombre);
         return repository.findByNombre(nombre);
     }
 
+    /**
+     * Obtiene los funkos con id
+     * @param id
+     */
     @Override
     public Mono<Funko> findById(Integer id) throws SQLException, ExecutionException, InterruptedException {
         logger.debug("Buscando funko con id: {}", id);
@@ -71,6 +95,10 @@ public class FunkoServiceImpl implements FunkoService{
         )).switchIfEmpty(Mono.error(new FunkoNoEncontradoException("No existe el funko con id: " + id)));
     }
 
+    /**
+     * Guarda un funko
+     * @param funko
+     */
     public Mono<Funko> saveWithoutNotify(Funko funko) throws Exception {
         logger.debug("Guardando funko: {}", funko);
         return repository.save(funko).doOnSuccess(
@@ -83,6 +111,10 @@ public class FunkoServiceImpl implements FunkoService{
         });
     }
 
+    /**
+     * Guarda un funko y notifica
+     * @param funko
+     */
     @Override
     public Mono<Funko> save(Funko funko) throws Exception {
         return saveWithoutNotify(funko).doOnSuccess(
@@ -95,6 +127,10 @@ public class FunkoServiceImpl implements FunkoService{
         }).switchIfEmpty(Mono.error(new FunkoNoGuardado("No se ha podido guardar el funko con id cod: "+funko.getId())));
     }
 
+    /**
+     * Actualiza un funko sin notificar
+     * @param funko
+     */
     public Mono<Funko> updateWithoutNotify(Funko funko) throws SQLException, ExecutionException, InterruptedException {
         logger.debug("Actualizando funko: {}", funko);
         return this.findById(funko.getId())
@@ -118,6 +154,10 @@ public class FunkoServiceImpl implements FunkoService{
                 );
     }
 
+    /**
+     * Actualiza un funko y notifica
+     * @param funko
+     */
     @Override
     public Mono<Funko> update(Funko funko) throws SQLException, ExecutionException, InterruptedException {
         return updateWithoutNotify(funko).doOnSuccess(
@@ -131,6 +171,10 @@ public class FunkoServiceImpl implements FunkoService{
         );
     }
 
+    /**
+     * Elimina un funko sin notificar
+     * @param id
+     */
     private Mono<Funko> deleteByIdWithoutNotification(Integer id) throws SQLException {
         logger.debug("Eliminando funko con id: {}", id);
         return repository.findById(id)
@@ -146,6 +190,10 @@ public class FunkoServiceImpl implements FunkoService{
                 });
     }
 
+    /**
+     * Elimina un funko y notifica
+     * @param id
+     */
     @Override
     public Mono<Boolean> deleteById(Integer id) throws SQLException, ExecutionException, InterruptedException {
         return  deleteByIdWithoutNotification(id).doOnSuccess(
@@ -159,6 +207,9 @@ public class FunkoServiceImpl implements FunkoService{
         ).map(funko -> true);
     }
 
+    /**
+     * Elimina todos los funkos
+     */
     @Override
     public Mono<Void> deleteAll() throws SQLException, ExecutionException, InterruptedException {
         logger.debug("Eliminando todos los funkos");
@@ -166,6 +217,9 @@ public class FunkoServiceImpl implements FunkoService{
         return repository.deleteAll().then(Mono.empty());
     }
 
+    /**
+     * Realiza un backup de los funkos
+     */
     @Override
     public Mono<Boolean> backup() throws SQLException, ExecutionException, InterruptedException, ExportException {
         logger.debug("Realizando backup de los funkos");
@@ -180,6 +234,9 @@ public class FunkoServiceImpl implements FunkoService{
         ).switchIfEmpty(Mono.just(false));
     }
 
+    /**
+     * Importa los funkos desde un csv
+     */
     @Override
     public Flux<Funko> importCsv() throws ExecutionException, InterruptedException {
         logger.debug("Importando funkos desde csv");
@@ -196,10 +253,16 @@ public class FunkoServiceImpl implements FunkoService{
         });
     }
 
+    /**
+     * Obtiene las notificaciones
+     */
     public Flux<Notificacion<Funko>> getNotifications() {
         return notificacion.getNotificacion();
     }
 
+    /**
+     * Detiene el cleaner
+     */
     public void stopCleaner(){
         cache.shutdown();
     }
